@@ -28,7 +28,7 @@ const schema: mongoose.Schema = new mongoose.Schema(
       required: true,
     },
     price: {
-      type: Number,
+      type: String,
       default: 0,
     },
     cover: {

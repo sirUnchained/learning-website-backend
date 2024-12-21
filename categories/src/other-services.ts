@@ -26,7 +26,8 @@ async function callService(
   version: string,
   method: string,
   route: string,
-  body: any
+  body: any,
+  header?: any
 ) {
   const apiData = await checkService(name, version);
   if (!apiData || !apiData.length) {
@@ -38,9 +39,13 @@ async function callService(
     response = await fetch(
       `http://${apiData[apiData.length - 1].ip}:${
         apiData[apiData.length - 1].port
-      }/${route}`
+      }/${route}`,
+      {
+        headers: {
+          ...header,
+        },
+      }
     );
-    console.log(await response.json());
     if (!response.ok) {
       return false;
     }
@@ -57,6 +62,7 @@ async function callService(
       method,
       headers: {
         "content-type": "application/json",
+        ...header,
       },
       body: JSON.stringify(body),
     }

@@ -46,7 +46,6 @@ async function callService(
         },
       }
     );
-    console.log(await response.json());
     if (!response.ok) {
       return false;
     }

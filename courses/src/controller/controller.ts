@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import courseModel from "../model/model";
 import { isValidObjectId } from "mongoose";
 import callService from "../other-services";
+import { createCourseValidator } from "../utils/validators/courses.validator";
 
 interface teacherType {
   _id: string;
@@ -108,8 +109,13 @@ export const create = async (
 ) => {
   try {
     const { title, categoryID, description, price, isFinished } = req.body;
+    await createCourseValidator.validate(
+      { title, categoryID, description, price, isFinished },
+      { abortEarly: false }
+    );
+
     const currentUser = req.user;
-    const slug = title?.trim().replace(/[\s_\.]/g, "-");
+    const slug = title?.trim().replace(/[\s-\.]/g, "-");
 
     const checkSlug = await courseModel.findOne({ slug });
     if (checkSlug) {
@@ -121,15 +127,19 @@ export const create = async (
       "users",
       "1.1.1",
       "GET",
-      `single/${currentUser?._id}`,
+      `${currentUser?._id}`,
       null,
-      null
+      { authorization: `Bearer ${currentUser?.token}` }
     );
-    if (teacher.role !== "TEACHER" || teacher.role !== "ADMIN") {
+    if (teacher.role !== "TEACHER" && teacher.role !== "ADMIN") {
       res.status(404).json({ msg: "teacher not found." });
       return;
     }
 
+    if (!isValidObjectId(categoryID)) {
+      res.status(404).json({ msg: "category not found." });
+      return;
+    }
     const category = await callService(
       "categories",
       "1.1.1",
@@ -152,6 +162,7 @@ export const create = async (
       teacherID: currentUser?._id,
       cover,
       description,
+      info: description.slice(0, 200),
       price,
       isFinished: isFinished || false,
     });

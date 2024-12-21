@@ -8,13 +8,13 @@ import authorization from "../middleWares/auth";
 import isAdmin from "../middleWares/isAdmin";
 
 router.route("/").get(authorization, isAdmin, controller.getUsers);
+router.route("/:userID").get(controller.getSingle);
 router.route("/teachers").get(controller.getTeachers);
-router.route("/single/:userID").get(controller.getSingle);
 router.route("/getMe").get(authorization, controller.getMe);
 router
   .route("/register")
   .post(validator(registerValidator), controller.register);
 router.route("/login").post(controller.login);
-router.route("/ban/:userID").post(authorization, isAdmin, controller.banUser);
+router.route("/:userID/ban").post(authorization, isAdmin, controller.banUser);
 
 export default router;

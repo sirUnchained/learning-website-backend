@@ -1,5 +1,6 @@
-import { NextFunction, Request, Response, Express } from "express";
+import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import callService from "../other-services";
 
 interface UserInterface {
   _id?: string;
@@ -39,12 +40,17 @@ async function authorization(req: Request, res: Response, next: NextFunction) {
     );
     let user: any;
     if (typeof payLoad === "object") {
-      user = await fetch("http://localhost:4001/getMe", {
-        headers: {
+      user = await callService(
+        "users",
+        "1.1.1",
+        "GET",
+        payLoad._id.toString(),
+        null,
+        {
           authorization: `Bearer ${token}`,
-        },
-      });
-      user = await user.json();
+        }
+      );
+
       delete user?.password;
       user.token = token;
     } else {

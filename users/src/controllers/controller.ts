@@ -139,7 +139,7 @@ export const register = async (
     await newUser.save();
 
     const token = jwt.sign(
-      { username: newUserData.username },
+      { username: newUserData.username, _id: newUserData._id },
       "shhh_iTs_SeCrET_KeY",
       {
         expiresIn: "1d",
@@ -178,9 +178,13 @@ export const login = async (
       return;
     }
 
-    const token = jwt.sign({ username }, "shhh_iTs_SeCrET_KeY", {
-      expiresIn: "1d",
-    });
+    const token = jwt.sign(
+      { username, _id: checkUser._id },
+      "shhh_iTs_SeCrET_KeY",
+      {
+        expiresIn: "1d",
+      }
+    );
 
     res.status(200).json({ token });
     return;

@@ -12,12 +12,12 @@ async function start() {
       console.log("categories service listen on port", 4004);
     });
 
-    await fetch("http://localhost:5000/register/category/1/4004", {
+    await fetch("http://localhost:5000/register/categories/1.1.1/4004", {
       method: "POST",
     });
   } catch (error) {
     console.log("we have an error =>", error);
-    await fetch("http://localhost:5000/register/category/1/4004", {
+    await fetch("http://localhost:5000/register/categories/1.1.1/4004", {
       method: "POST",
     });
     process.exit(1);

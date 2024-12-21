@@ -16,9 +16,9 @@ import userRoutes from "./routes/routes";
 
 app.use("/", userRoutes);
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "ValidationError") {
-    res.status(400).json({ errors: err.message });
+    res.status(400).json({ errors: err.errors });
     return;
   } else if (err.message === "unAuthorization") {
     res.status(401).json({ errors: "pleas sign in or sign up first." });
