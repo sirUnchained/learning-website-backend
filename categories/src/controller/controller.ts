@@ -10,6 +10,7 @@ export const getAll = async (
   try {
     const categories = await categoryModel.find({}).lean();
     res.status(200).json(categories);
+    return;
   } catch (error) {
     next(error);
   }
@@ -34,6 +35,7 @@ export const getSingle = async (
     }
 
     res.status(200).json(category);
+    return;
   } catch (error) {
     next(error);
   }
@@ -72,6 +74,7 @@ export const create = async (
     });
 
     res.status(201).json(category);
+    return;
   } catch (error) {
     next(error);
   }
@@ -96,6 +99,7 @@ export const remove = async (
     }
 
     res.status(200).json(category);
+    return;
   } catch (error) {
     next(error);
   }

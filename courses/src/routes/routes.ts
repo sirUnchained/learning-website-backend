@@ -11,7 +11,7 @@ router.route("/single/:courseID").get(controller.getSingle);
 router
   .route("/create")
   .post(authorization, uploader.single("cover"), controller.create);
-router.route("/removeSingle/:courseID").delete(controller.removeSingle);
+router.route("/remove-single/:courseID").delete(controller.removeSingle);
 // router.route("/removeAllCategoryCourses/:categoryID").delete();
 
 export default router;

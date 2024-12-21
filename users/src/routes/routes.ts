@@ -1,5 +1,5 @@
-import express, { Router, Request, Response } from "express";
-const router: Router = express.Router();
+import { Router } from "express";
+const router: Router = Router();
 
 import * as controller from "./../controllers/controller";
 import registerValidator from "../utils/validators/register";
@@ -9,9 +9,7 @@ import isAdmin from "../middleWares/isAdmin";
 
 router.route("/").get(authorization, isAdmin, controller.getUsers);
 router.route("/teachers").get(controller.getTeachers);
-router
-  .route("/single/:userID")
-  .get(controller.getSingle);
+router.route("/single/:userID").get(controller.getSingle);
 router.route("/getMe").get(authorization, controller.getMe);
 router
   .route("/register")

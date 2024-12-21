@@ -1,25 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import courseModel from "../model/model";
 import { isValidObjectId } from "mongoose";
+import callService from "../other-services";
 
-interface errorType {
-  error: string;
-}
 interface teacherType {
   _id: string;
   fullname: string;
   username: string;
   role?: string;
-}
-interface courseType {
-  _id?: string;
-  title: string;
-  slug: string;
-  categoryID: string;
-  teacherID: string;
-  description?: String;
-  price: Number;
-  cover?: String;
 }
 
 export const getAll = async (
@@ -29,15 +17,15 @@ export const getAll = async (
 ) => {
   try {
     const courses = await courseModel.find().lean();
-    const getTeachers = await fetch("http://localhost:4000/", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ action: "GET_TEACHERS" }),
-    });
-    const teachers: teacherType[] = await getTeachers.json();
-    if (!teachers.length || !getTeachers.ok) {
+
+    const teachers: teacherType[] = await callService(
+      "users",
+      "1.1.1",
+      "GET",
+      "",
+      null
+    );
+    if (!teachers.length) {
       res.status(404).json({ msg: "no teachers found." });
       return;
     }
@@ -53,6 +41,7 @@ export const getAll = async (
     });
 
     res.status(200).json(courses);
+    return;
   } catch (error) {
     next(error);
   }
@@ -76,28 +65,28 @@ export const getSingle = async (
       return;
     }
 
-    const getTeacher = await fetch(`http://localhost:4000`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ action: "GET_TEACHER", _id: course.teacherID }),
-    });
-    const teacher: teacherType = await getTeacher.json();
-    if (!getTeacher.ok || teacher.role !== "TEACHER") {
+    const teacher: teacherType = await callService(
+      "users",
+      "1.1.1",
+      "GET",
+      `single/${course.teacher}`,
+      null,
+      null
+    );
+    if (teacher.role !== "TEACHER") {
       res.status(404).json({ msg: "for this course teacher not found." });
       return;
     }
 
-    const getCategory = await fetch(`http://localhost:4000/`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ action: "GET_CATEGORY", _id: course.categoryID }),
-    });
-    const category = await getCategory.json();
-    if (!category || !getCategory.ok) {
+    const category = await callService(
+      "categories",
+      "1.1.1",
+      "GET",
+      `single/${course.categoryID}`,
+      null,
+      null
+    );
+    if (!category) {
       res.status(404).json({ msg: "course category not found." });
       return;
     }
@@ -106,6 +95,7 @@ export const getSingle = async (
     delete course.teacherID;
 
     res.status(200).json({ ...course, teacher, category });
+    return;
   } catch (error) {
     next(error);
   }
@@ -127,34 +117,28 @@ export const create = async (
       return;
     }
 
-    const getTeacher = await fetch(
-      `http://localhost:4001/single/${currentUser?._id}`,
-      {
-        headers: {
-          authorization: `Bearer ${currentUser?.token}`,
-        },
-      }
+    const teacher = await callService(
+      "users",
+      "1.1.1",
+      "GET",
+      `single/${currentUser?._id}`,
+      null,
+      null
     );
-    const checkTeacher = await getTeacher.json();
-    if (
-      !checkTeacher ||
-      !getTeacher.ok ||
-      checkTeacher.role !== "TEACHER" ||
-      checkTeacher.role !== "ADMIN"
-    ) {
+    if (teacher.role !== "TEACHER" || teacher.role !== "ADMIN") {
       res.status(404).json({ msg: "teacher not found." });
       return;
     }
 
-    const getCategory = await fetch(`http://localhost:4000/`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ action: "GET_CATEGORY", _id: categoryID }),
-    });
-    const checkCategory = await getCategory.json();
-    if (!checkCategory || !getCategory.ok) {
+    const category = await callService(
+      "categories",
+      "1.1.1",
+      "GET",
+      `single/${categoryID}`,
+      null,
+      null
+    );
+    if (!category) {
       res.status(404).json({ msg: "category not found." });
       return;
     }
@@ -174,6 +158,7 @@ export const create = async (
     await newCourse.save();
 
     res.status(200).json({ msg: "course created." });
+    return;
   } catch (error) {
     next(error);
   }
@@ -198,6 +183,7 @@ export const removeSingle = async (
     }
 
     res.status(200).json({ msg: "course removed !." });
+    return;
   } catch (error) {
     next(error);
   }

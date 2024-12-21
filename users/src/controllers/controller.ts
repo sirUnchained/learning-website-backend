@@ -27,6 +27,8 @@ export const getUsers = async (
       .select("fullname username phone email role")
       .lean();
     res.status(200).json(users);
+
+    return;
   } catch (error) {
     next(error);
   }
@@ -54,6 +56,7 @@ export const getSingle = async (
     }
 
     res.status(200).json(user);
+    return;
   } catch (error) {
     next(error);
   }
@@ -73,6 +76,7 @@ export const getMe = async (
     }
 
     res.status(200).json(currentUser);
+    return;
   } catch (error) {
     next(error);
   }
@@ -89,15 +93,10 @@ export const getTeachers = async (
       .select("fullname username _id role")
       .lean();
 
-    const courses = await callService(
-      "courses",
-      "1.1.1",
-      "GET",
-      "course",
-      null
-    );
+    // await callService("courses", "1.1.1", "GET", "course", null);
 
     res.status(200).json(teachers);
+    return;
   } catch (error) {
     next(error);
   }
@@ -148,6 +147,7 @@ export const register = async (
     );
 
     res.status(201).json({ token });
+    return;
   } catch (error) {
     next(error);
   }
@@ -162,7 +162,7 @@ export const login = async (
     const { username, password } = req.body;
 
     const checkUser: UserInterface | null = await userModel.findOne({
-      username: username,
+      username,
     });
     if (!checkUser) {
       res.status(404).json({ msg: "invalid username or password." });
@@ -183,6 +183,7 @@ export const login = async (
     });
 
     res.status(200).json({ token });
+    return;
   } catch (error) {
     next(error);
   }
@@ -207,6 +208,7 @@ export const banUser = async (
     }
 
     res.status(200).json({ msg: "user banned." });
+    return;
   } catch (error) {
     next(error);
   }
