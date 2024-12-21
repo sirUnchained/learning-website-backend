@@ -3,6 +3,7 @@ import userModel from "./../models/User";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import callService from "../utils/other-services";
 
 interface UserInterface {
   _id?: string;
@@ -87,6 +88,14 @@ export const getTeachers = async (
       .find({ role: "TEACHER" })
       .select("fullname username _id role")
       .lean();
+
+    const courses = await callService(
+      "courses",
+      "1.1.1",
+      "GET",
+      "course",
+      null
+    );
 
     res.status(200).json(teachers);
   } catch (error) {

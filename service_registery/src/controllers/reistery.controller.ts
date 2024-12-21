@@ -43,17 +43,16 @@ class ServiceRegistery {
   }
 
   async get(req: FastifyRequest, reply: FastifyReply) {
-    const { name, version, port } = req.params as {
+    const { name, version } = req.params as {
       name: string | undefined;
       version: string | undefined;
-      port: string | undefined;
     };
     const ip: string | undefined = req.socket.remoteAddress?.includes("::")
       ? `[${req.socket.remoteAddress}]`
       : req.socket.remoteAddress;
 
-    if (!name || !version || !port || !ip) {
-      return false;
+    if (!name || !version || !ip) {
+      return reply.status(200).send({ result: null });
     }
 
     const result = db.get(name, version);

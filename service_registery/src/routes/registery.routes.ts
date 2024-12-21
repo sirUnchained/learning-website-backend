@@ -9,7 +9,7 @@ function registeryRoutes(
   fastify: FastifyInstance,
   option: FastifyPluginOptions
 ) {
-  fastify.get("/register/:name/:version/:port", controller.get);
+  fastify.get("/register/:name/:version", controller.get);
   fastify.post(
     "/register/:name/:version/:port",
     { preHandler: [middleWare1, middleWare2] }, // we set a middleWare here

@@ -1,16 +1,1 @@
-{
-  "users1.1.1[::1]4000": {
-    "name": "users",
-    "version": "1.1.1",
-    "ip": "[::1]",
-    "port": "4000",
-    "createdAt": 1734527423808
-  },
-  "users-2-[::1]-1234": {
-    "name": "users",
-    "version": "2",
-    "ip": "[::1]",
-    "port": "1234",
-    "createdAt": 1734707225424
-  }
-}
+{"users-1.1.1-[::1]-4001":{"name":"users","version":"1.1.1","ip":"[::1]","port":"4001","createdAt":1734780572845},"course-1.1.1-[::1]-4002":{"name":"course","version":"1.1.1","ip":"[::1]","port":"4002","createdAt":1734780604799}}

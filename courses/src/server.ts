@@ -12,12 +12,12 @@ async function start() {
       console.log("courses service listen on port", 4002);
     });
 
-    await fetch("http://localhost:5000/register/course/1/4002", {
+    await fetch("http://localhost:5000/register/course/1.1.1/4002", {
       method: "POST",
     });
   } catch (error) {
     console.error("Failed to connect to MongoDB:", error);
-    await fetch("http://localhost:5000/register/course/1/4002", {
+    await fetch("http://localhost:5000/register/course/1.1.1/4002", {
       method: "POST",
     });
     process.exit(1);

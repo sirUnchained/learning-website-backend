@@ -12,12 +12,12 @@ async function start() {
       console.log("user service listen on port", 4001);
     });
 
-    await fetch("http://localhost:5000/register/users/1/4001", {
+    await fetch("http://localhost:5000/register/users/1.1.1/4001", {
       method: "POST",
     });
   } catch (error) {
     console.error("error happen:", error);
-    await fetch("http://localhost:5000/register/users/1/4001", {
+    await fetch("http://localhost:5000/register/users/1.1.1/4001", {
       method: "DELETE",
     });
     process.exit(1);
