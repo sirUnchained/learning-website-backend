@@ -142,7 +142,7 @@ export const register = async (
       { username: newUserData.username, _id: newUserData._id },
       "shhh_iTs_SeCrET_KeY",
       {
-        expiresIn: "1d",
+        expiresIn: "10d",
       }
     );
 
@@ -182,7 +182,7 @@ export const login = async (
       { username, _id: checkUser._id },
       "shhh_iTs_SeCrET_KeY",
       {
-        expiresIn: "1d",
+        expiresIn: "10d",
       }
     );
 

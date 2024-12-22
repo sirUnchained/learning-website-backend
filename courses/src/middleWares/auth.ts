@@ -38,6 +38,7 @@ async function authorization(req: Request, res: Response, next: NextFunction) {
       token,
       "shhh_iTs_SeCrET_KeY"
     );
+
     let user: any;
     if (typeof payLoad === "object") {
       user = await callService(
