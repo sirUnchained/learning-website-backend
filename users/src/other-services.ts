@@ -13,10 +13,7 @@ async function checkService(name: string, version: string) {
       method: "GET",
     }
   );
-  const result = await response.json();
-  if (!result.result) {
-    return false;
-  }
+  const result = response.ok && (await response.json());
 
   return result.result as apiResult[];
 }
@@ -34,44 +31,20 @@ async function callService(
     return false;
   }
 
-  let response = null;
-  if (method === "GET") {
-    response = await fetch(
-      `http://${apiData[apiData.length - 1].ip}:${
-        apiData[apiData.length - 1].port
-      }/${route}`,
-      {
-        headers: {
-          ...header,
-        },
-      }
-    );
-    if (!response.ok) {
-      return false;
-    }
-
-    const result = await response.json();
-    return result;
-  }
-
-  response = await fetch(
-    `http://${apiData[apiData.length - 1].ip}:${
-      apiData[apiData.length - 1].port
-    }/${route}`,
+  const lastestApiVersoin = apiData[apiData.length - 1];
+  const response = await fetch(
+    `http://${lastestApiVersoin.ip}:${lastestApiVersoin.port}/${route}`,
     {
       method,
       headers: {
         "content-type": "application/json",
         ...header,
       },
-      body: JSON.stringify(body),
+      body: method !== "GET" ? JSON.stringify(body) : undefined,
     }
   );
-  if (!response.ok) {
-    return false;
-  }
 
-  const result = await response.json();
+  const result = response.ok && (await response.json());
   return result;
 }
 

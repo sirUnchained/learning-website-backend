@@ -3,7 +3,7 @@ import userModel from "./../models/User";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import callService from "../utils/other-services";
+import callService from "../other-services";
 
 interface UserInterface {
   _id?: string;
