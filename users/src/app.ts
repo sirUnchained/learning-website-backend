@@ -12,9 +12,11 @@ app.use(
   })
 );
 
-import userRoutes from "./routes/routes";
+import usersRouter from "./routes/users";
+import authRouter from "./routes/auth";
 
-app.use("/", userRoutes);
+app.use("/", usersRouter);
+app.use("/auth", authRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "ValidationError") {
