@@ -14,7 +14,7 @@ app.use(
 app.use(helmet());
 
 import userRoutes from "./routes/routes";
-app.use(userRoutes);
+app.use("/courses", userRoutes);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "ValidationError") {

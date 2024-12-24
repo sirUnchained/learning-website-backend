@@ -12,8 +12,11 @@ export default function categoryRoutes(
   options: FastifyPluginOptions
 ) {
   fastify.get("/categories", getAll);
-  // todo
-  fastify.post("/create", { preHandler: [authorization] }, create);
   fastify.get("/single/:categoryID", getSingle);
-  fastify.delete("/:categoryID/remove", remove);
+  fastify.post("/create", { preHandler: [authorization] }, create);
+  fastify.delete(
+    "/:categoryID/remove",
+    { preHandler: [authorization] },
+    remove
+  );
 }
