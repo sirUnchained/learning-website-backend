@@ -1,20 +1,19 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import getService from "../utils/getService";
 import CircuitBreaker from "../utils/circuitBreaker";
+
 const breaker = new CircuitBreaker();
 
-export const getAllUsers = async (
+export const register = async (
   request: FastifyRequest,
   reply: FastifyReply
 ): Promise<void> => {
   try {
-    const registerApi = await getService("users");
+    const register = await getService("users");
     const result = await breaker.callService({
-      method: "GET",
-      url: `http://localhost:${registerApi[0].port}/users/`,
-      headers: {
-        Authorization: `Bearer ${request.token}`,
-      },
+      method: "POST",
+      url: `http://localhost:${register[0].port}/auth/register`,
+      data: request.body,
     });
     reply.status(result.status).send(result.data);
     return;
@@ -23,15 +22,17 @@ export const getAllUsers = async (
   }
 };
 
-export const getAllTeachers = async (
+export const login = async (
   request: FastifyRequest,
   reply: FastifyReply
 ): Promise<void> => {
   try {
-    const registerApi = await getService("users");
+    const register = await getService("users");
+    console.log(register);
     const result = await breaker.callService({
-      method: "GET",
-      url: `http://localhost:${registerApi[0].port}/users/teachers`,
+      method: "POST",
+      url: `http://localhost:${register[0].port}/auth/login`,
+      data: request.body,
     });
     reply.status(result.status).send(result.data);
     return;

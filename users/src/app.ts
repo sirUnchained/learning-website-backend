@@ -18,6 +18,15 @@ import authRouter from "./routes/auth";
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 
+app.use((req, res, next) => {
+  try {
+    res.status(404).json({ msg: "route not found." });
+    return;
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "ValidationError") {
     res.status(400).json({ errors: err.errors });

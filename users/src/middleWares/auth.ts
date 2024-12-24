@@ -22,6 +22,7 @@ declare global {
 
 async function authorization(req: Request, res: Response, next: NextFunction) {
   try {
+    console.log("object");
     const bearerToken = req.headers.authorization;
     if (!bearerToken) {
       next(new Error("unAuthorization"));
