@@ -1,32 +1,15 @@
 import axios from "axios";
 
 class CircuitBreaker {
-  private state = {};
+  private state: any = {};
   private maxFails = 5;
   private coolDownTimePerSec = 20;
 
-  async callService(api: {
-    meethod: string;
-    url: string;
-    headers?: any;
-    data?: any;
-  }) {
-    if (!this.canRequest(api.url)) {
-      return false;
-    }
-    try {
-      const response = await axios(api);
-      return response.data;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  onSuccess(url: string) {
+  private onSuccess(url: string) {
     this.initState(url);
   }
 
-  onFailed(url: string) {
+  private onFailed(url: string) {
     this.state[url].failures += 1;
     if (this.state[url].failures >= this.maxFails) {
       this.state[url].circuit = "OPEN";
@@ -35,7 +18,7 @@ class CircuitBreaker {
     }
   }
 
-  initState(url: string) {
+  private initState(url: string) {
     this.state[url] = {
       failures: 0,
       maxFails: 5,
@@ -45,7 +28,7 @@ class CircuitBreaker {
     };
   }
 
-  canRequest(url: string): boolean {
+  private canRequest(url: string): boolean {
     if (!this.state[url]) {
       this.initState(url);
       return true;
@@ -62,6 +45,25 @@ class CircuitBreaker {
     }
 
     return false;
+  }
+
+  public async callService(api: {
+    meethod: string;
+    url: string;
+    headers?: any;
+    data?: any;
+  }) {
+    if (!this.canRequest(api.url)) {
+      return false;
+    }
+    try {
+      const response = await axios(api);
+      this.onSuccess(api.url);
+      return response.data;
+    } catch (error: any) {
+      this.onFailed(api.url);
+      return { status: error.status, data: error.response.data };
+    }
   }
 }
 

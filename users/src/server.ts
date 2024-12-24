@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 async function start() {
   try {
     await mongoose
-      .connect("mongodb://localhost:27017/microServices-users")
+      .connect("mongodb://0.0.0.0:27017/microServices-users")
       .then(() => {
         console.log("mongodb connected.");
       });
