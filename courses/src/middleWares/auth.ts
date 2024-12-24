@@ -42,15 +42,17 @@ async function authorization(req: Request, res: Response, next: NextFunction) {
     let user: any;
     if (typeof payLoad === "object") {
       user = await callService(
-        "users",
+        `users`,
         "1.1.1",
         "GET",
-        payLoad._id.toString(),
+        `users/${payLoad._id.toString()}`,
         null,
         {
           authorization: `Bearer ${token}`,
         }
       );
+      console.log("user");
+      console.log(user);
 
       delete user?.password;
       user.token = token;

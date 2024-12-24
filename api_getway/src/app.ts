@@ -2,7 +2,12 @@ import fastify from "fastify";
 const app = fastify();
 
 import fastifyMultipart from "@fastify/multipart";
-app.register(fastifyMultipart);
+app.register(fastifyMultipart, {
+  limits: {
+    fileSize: 1 * 1024 * 1024,
+    files: 1,
+  },
+});
 
 import usersRouter from "./routes/users.routes";
 import authRoutes from "./routes/auth.routes";

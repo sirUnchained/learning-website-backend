@@ -15,7 +15,7 @@ async function checkService(name: string, version: string) {
   );
   const result = response.ok && (await response.json());
 
-  return result.result as apiResult[];
+  return result as apiResult[];
 }
 
 async function callService(

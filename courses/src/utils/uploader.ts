@@ -28,6 +28,8 @@ function coverUploader(isCover: Boolean = false) {
       );
     },
     filename: function (req, file, callback) {
+      console.log("object");
+
       const name = `${Date.now()}-${Math.floor(
         Math.random() * 10e9
       )}${path.extname(file.originalname)}`;

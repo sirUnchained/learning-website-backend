@@ -109,6 +109,7 @@ export const create = async (
 ) => {
   try {
     const { title, categoryID, description, price, isFinished } = req.body;
+    console.log(req.file);
     await createCourseValidator.validate(
       { title, categoryID, description, price, isFinished },
       { abortEarly: false }
