@@ -12,7 +12,7 @@ app.use(
 );
 
 import categoryRoutes from "./routes/routes";
-app.use(categoryRoutes);
+app.use("/categories", categoryRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "ValidationError") {

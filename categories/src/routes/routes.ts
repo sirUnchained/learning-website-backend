@@ -9,7 +9,7 @@ router.route("/").get(controller.getAll);
 router.route("/single/:categoryID").get(controller.getSingle);
 router.route("/create").post(authorization, isAdmin, controller.create);
 router
-  .route("/remove/:categoryID")
+  .route("/:categoryID/remove")
   .delete(authorization, isAdmin, controller.remove);
 
 export default router;
