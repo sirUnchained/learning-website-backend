@@ -15,7 +15,7 @@ app.use(
 import usersRouter from "./routes/users";
 import authRouter from "./routes/auth";
 
-app.use("/user", usersRouter);
+app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

@@ -48,18 +48,18 @@ class CircuitBreaker {
   }
 
   public async callService(api: {
-    meethod: string;
+    method: string;
     url: string;
     headers?: any;
     data?: any;
   }) {
     if (!this.canRequest(api.url)) {
-      return false;
+      return { status: 500, data: "server is in rest !" };
     }
     try {
       const response = await axios(api);
       this.onSuccess(api.url);
-      return response.data;
+      return { status: response.status, data: response.data };
     } catch (error: any) {
       this.onFailed(api.url);
       return { status: error.status, data: error.response.data };
