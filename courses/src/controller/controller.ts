@@ -109,7 +109,7 @@ export const create = async (
 ) => {
   try {
     const { title, categoryID, description, price, isFinished } = req.body;
-    console.log(req.file);
+    console.log("file =>", req.file);
     await createCourseValidator.validate(
       { title, categoryID, description, price, isFinished },
       { abortEarly: false }
@@ -169,7 +169,7 @@ export const create = async (
     });
     await newCourse.save();
 
-    res.status(200).json({ msg: "course created." });
+    res.status(201).json({ msg: "course created." });
     return;
   } catch (error) {
     next(error);

@@ -1,35 +1,38 @@
 import multer from "multer";
-import path from "path";
-import fs from "fs";
+import path from "node:path";
+import fs from "node:fs";
 
 function coverUploader(isCover: Boolean = false) {
   const storage = multer.diskStorage({
     destination: function (req, file, callback) {
-      const slug = req.body.title?.trim().replace(/[\s_\.]/g, "-");
-      if (
-        !fs.existsSync(
-          path.join(
-            __dirname,
-            "..",
-            "..",
-            "public",
-            "courses",
-            req.body.title?.trim().replace(/[\s_\.]/g, "-")
+      console.log("uploader ", req.body);
+      try {
+        const slug = req.body.title?.trim().replace(/[\s_\.]/g, "-");
+        if (
+          !fs.existsSync(
+            path.join(
+              __dirname,
+              "..",
+              "..",
+              "public",
+              "courses",
+              req.body.title?.trim().replace(/[\s_\.]/g, "-")
+            )
           )
-        )
-      ) {
-        fs.mkdirSync(
+        ) {
+          fs.mkdirSync(
+            path.join(__dirname, "..", "..", "public", "courses", slug)
+          );
+        }
+        callback(
+          null,
           path.join(__dirname, "..", "..", "public", "courses", slug)
         );
+      } catch (error: any) {
+        callback(error, "error");
       }
-      callback(
-        null,
-        path.join(__dirname, "..", "..", "public", "courses", slug)
-      );
     },
     filename: function (req, file, callback) {
-      console.log("object");
-
       const name = `${Date.now()}-${Math.floor(
         Math.random() * 10e9
       )}${path.extname(file.originalname)}`;

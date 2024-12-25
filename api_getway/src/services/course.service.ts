@@ -4,6 +4,7 @@ import CircuitBreaker from "../utils/circuitBreaker";
 import FormData from "form-data";
 import { pipeline } from "node:stream";
 import fs from "node:fs";
+import path from "node:path";
 const breaker = new CircuitBreaker();
 
 declare module "fastify" {
@@ -39,25 +40,39 @@ export const newCourse = async (
   const form = new FormData();
 
   if (file) {
-    // append files to frm data
-    form.append("cover", await file.toBuffer());
-    const fields = file.fields;
+    const filePath = path.join(__dirname, "shit.jpg");
+    const fileBuffer = await file.toBuffer();
+    fs.writeFileSync(filePath, fileBuffer);
+    form.append("cover", fs.createReadStream(filePath), {
+      filename: file.filename,
+    });
+
+    const fields = file.fields as any;
     for (const field in fields) {
+      // console.log(field, fields.hasOwnProperty(field));
       if (fields.hasOwnProperty(field)) {
-        form.append(field, `${fields[field]}`);
+        // console.log(field, fields[field].value);
+        if (fields[field].value) {
+          form.append(field, fields[field].value);
+        }
       }
     }
 
-    const result = await breaker.callService({
-      method: "POST",
-      url: `http://localhost:${registerApi[0].port}/courses/create`,
-      headers: {
-        Authorization: `Bearer ${request.token}`,
-        ...form.getHeaders(),
-      },
-      data: form,
-    });
-    reply.status(result.status).send(result.data);
-    return;
+    try {
+      const result = await breaker.callService({
+        method: "POST",
+        url: `http://localhost:${registerApi[0].port}/courses/create`,
+        headers: {
+          Authorization: `Bearer ${request.token}`,
+          "Content-Type": "multipart/form-data",
+        },
+        data: form,
+      });
+      reply.status(result.status).send(result.data);
+    } catch (error) {
+      reply.status(500).send({ message: "Error creating course" });
+    } finally {
+      fs.unlinkSync(filePath);
+    }
   }
 };

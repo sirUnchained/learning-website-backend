@@ -46,8 +46,7 @@ export const getMe = async (
     const currentUser = req.user;
 
     const data = usersService.getMe(currentUser);
-
-    res.status(data.status).json(data.result);
+    res.status(data.status).json(data.result || "err");
     return;
   } catch (error) {
     next(error);
