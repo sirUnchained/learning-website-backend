@@ -39,6 +39,9 @@ export const newCourse = async (
   const file = await request.file();
   const form = new FormData();
 
+  if (!file) {
+  }
+
   if (file) {
     const filePath = path.join(__dirname, "shit.jpg");
     const fileBuffer = await file.toBuffer();

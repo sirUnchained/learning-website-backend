@@ -108,6 +108,8 @@ export const create = async (
   next: NextFunction
 ) => {
   try {
+    console.log(req.body);
+
     const { title, categoryID, description, price, isFinished } = req.body;
     console.log("file =>", req.file);
     await createCourseValidator.validate(
