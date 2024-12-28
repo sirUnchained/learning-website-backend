@@ -108,10 +108,7 @@ export const create = async (
   next: NextFunction
 ) => {
   try {
-    console.log(req.body);
-
     const { title, categoryID, description, price, isFinished } = req.body;
-    console.log("file =>", req.file);
     await createCourseValidator.validate(
       { title, categoryID, description, price, isFinished },
       { abortEarly: false }
@@ -126,15 +123,11 @@ export const create = async (
       return;
     }
 
-    const teacher = await callService(
-      "users",
-      "1.1.1",
-      "GET",
-      `${currentUser?._id}`,
-      null,
-      { authorization: `Bearer ${currentUser?.token}` }
-    );
-    if (teacher.role !== "TEACHER" && teacher.role !== "ADMIN") {
+    if (!currentUser || !currentUser.role) {
+      res.status(400).json({ msg: "you are not reconized." });
+      return;
+    }
+    if (currentUser.role !== "TEACHER" && currentUser.role !== "ADMIN") {
       res.status(404).json({ msg: "teacher not found." });
       return;
     }
@@ -151,6 +144,7 @@ export const create = async (
       null,
       null
     );
+    console.log("category", category);
     if (!category) {
       res.status(404).json({ msg: "category not found." });
       return;

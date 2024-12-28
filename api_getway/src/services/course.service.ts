@@ -2,7 +2,6 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import getService from "../utils/getService";
 import CircuitBreaker from "../utils/circuitBreaker";
 import FormData from "form-data";
-import { pipeline } from "node:stream";
 import fs from "node:fs";
 import path from "node:path";
 const breaker = new CircuitBreaker();
@@ -35,31 +34,24 @@ export const newCourse = async (
   request: FastifyRequest,
   reply: FastifyReply
 ): Promise<void> => {
+  const body: any = request.body;
   const registerApi = await getService("courses");
-  const file = await request.file();
-  const form = new FormData();
 
-  if (!file) {
-  }
+  if (body.cover && body.cover._buf) {
+    const form = new FormData();
 
-  if (file) {
-    const filePath = path.join(__dirname, "shit.jpg");
-    const fileBuffer = await file.toBuffer();
-    fs.writeFileSync(filePath, fileBuffer);
-    form.append("cover", fs.createReadStream(filePath), {
-      filename: file.filename,
-    });
-
-    const fields = file.fields as any;
-    for (const field in fields) {
-      // console.log(field, fields.hasOwnProperty(field));
-      if (fields.hasOwnProperty(field)) {
-        // console.log(field, fields[field].value);
-        if (fields[field].value) {
-          form.append(field, fields[field].value);
-        }
+    for (const item in body) {
+      if (!body[item]._buf) {
+        form.append(item, body[item].value);
       }
     }
+
+    const filePath = path.join(__dirname, "temp.jpg");
+    const fileBuffer = body.cover._buf;
+    fs.writeFileSync(filePath, fileBuffer);
+    form.append("cover", fs.readFileSync(filePath), {
+      filename: body.cover.filename,
+    });
 
     try {
       const result = await breaker.callService({
@@ -67,15 +59,38 @@ export const newCourse = async (
         url: `http://localhost:${registerApi[0].port}/courses/create`,
         headers: {
           Authorization: `Bearer ${request.token}`,
-          "Content-Type": "multipart/form-data",
+          ...form.getHeaders(),
         },
         data: form,
       });
-      reply.status(result.status).send(result.data);
+      await reply.status(result.status).send(result.data);
     } catch (error) {
-      reply.status(500).send({ message: "Error creating course" });
+      await reply.status(500).send({ message: "Error creating course" });
     } finally {
       fs.unlinkSync(filePath);
     }
+  } else if (request.multipart) {
+    const form = new FormData();
+    for (const field in request.fields) {
+      form.append(field, request.fields[field]);
+    }
+    form.append("cover", request.multipart.file);
+
+    try {
+      const result = await breaker.callService({
+        method: "POST",
+        url: `http://localhost:${registerApi[0].port}/courses/create`,
+        headers: {
+          Authorization: `Bearer ${request.token}`,
+          ...form.getHeaders(),
+        },
+        data: form,
+      });
+      await reply.status(result.status).send(result.data);
+    } catch (error) {
+      await reply.status(500).send({ message: "Error creating course" });
+    }
+  } else {
+    await reply.status(400).send({ msg: "you sent no file." });
   }
 };

@@ -3,9 +3,9 @@ const app = fastify();
 
 import fastifyMultipart from "@fastify/multipart";
 app.register(fastifyMultipart, {
+  attachFieldsToBody: true,
   limits: {
-    fileSize: 1 * 1024 * 1024,
-    files: 1,
+    fileSize: 1024 * 1024,
   },
 });
 
