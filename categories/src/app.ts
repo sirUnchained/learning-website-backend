@@ -14,6 +14,16 @@ app.use(
 import categoryRoutes from "./routes/routes";
 app.use("/categories", categoryRoutes);
 
+app.use((req, res, next) => {
+  try {
+    console.log("404");
+    res.status(404).json({ message: "Route not found" });
+    return;
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "ValidationError") {
     res.status(400).json({ errors: err.message });

@@ -44,7 +44,7 @@ async function authorization(req: Request, res: Response, next: NextFunction) {
       user = await callService(`users`, "1.1.1", "GET", `users/getMe`, null, {
         Authorization: `Bearer ${token}`,
       });
-      console.log("user", user);
+      // console.log("user", user);
 
       delete user?.password;
       user.token = token;

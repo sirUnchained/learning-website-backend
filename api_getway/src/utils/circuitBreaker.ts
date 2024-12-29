@@ -2,7 +2,7 @@ import axios from "axios";
 
 class CircuitBreaker {
   private state: any = {};
-  private maxFails = 5;
+  private maxFails = 50000000;
   private coolDownTimePerSec = 20;
 
   private onSuccess(url: string) {

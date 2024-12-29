@@ -43,6 +43,7 @@ async function callService(
       body: method !== "GET" ? JSON.stringify(body) : undefined,
     }
   );
+  console.log(apiData, response);
 
   const result = response.ok && (await response.json());
   return result;

@@ -140,7 +140,7 @@ export const create = async (
       "categories",
       "1.1.1",
       "GET",
-      `single/${categoryID}`,
+      `categories/single/${categoryID}`,
       null,
       null
     );

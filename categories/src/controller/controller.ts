@@ -23,12 +23,15 @@ export const getSingle = async (
 ) => {
   try {
     const { categoryID } = req.params;
+    console.log(categoryID);
+
     if (!isValidObjectId(categoryID)) {
       res.status(404).json({ msg: "category not found." });
       return;
     }
 
     const category = await categoryModel.findById(categoryID).lean();
+    console.log(category);
     if (!category) {
       res.status(404).json({ msg: "category not found." });
       return;
