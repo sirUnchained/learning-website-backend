@@ -1,17 +1,5 @@
 import { isValidObjectId } from "mongoose";
 import userModel from "./../models/User";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-
-interface UserInterface {
-  _id?: string;
-  fullname: string;
-  username: string;
-  email: string;
-  phone: string;
-  password: string;
-  role?: "ADMIN" | "USER" | "TEACHER";
-}
 
 class UsersService {
   async getAll() {

@@ -1,5 +1,6 @@
 import app from "./app";
 import mongoose from "mongoose";
+import startRabbit from "./rabbitMQ";
 
 async function start() {
   try {
@@ -11,6 +12,8 @@ async function start() {
     app.listen(4001, () => {
       console.log("user service listen on port", 4001);
     });
+
+    await startRabbit();
 
     await fetch("http://localhost:5000/register/users/1.1.1/4001", {
       method: "POST",

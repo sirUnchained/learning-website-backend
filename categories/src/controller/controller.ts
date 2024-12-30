@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import categoryModel from "../model/model";
 import { isValidObjectId } from "mongoose";
+import CategoryService from "../service/service";
+
+const categoryService = new CategoryService();
 
 export const getAll = async (
   req: Request,
@@ -23,21 +26,10 @@ export const getSingle = async (
 ) => {
   try {
     const { categoryID } = req.params;
-    console.log(categoryID);
 
-    if (!isValidObjectId(categoryID)) {
-      res.status(404).json({ msg: "category not found." });
-      return;
-    }
+    const data = await categoryService.getSingle(categoryID);
 
-    const category = await categoryModel.findById(categoryID).lean();
-    console.log(category);
-    if (!category) {
-      res.status(404).json({ msg: "category not found." });
-      return;
-    }
-
-    res.status(200).json(category);
+    res.status(data.status).json(data.result);
     return;
   } catch (error) {
     next(error);
@@ -90,18 +82,10 @@ export const remove = async (
 ) => {
   try {
     const { categoryID } = req.params;
-    if (!isValidObjectId(categoryID)) {
-      res.status(404).json({ msg: "category not found." });
-      return;
-    }
 
-    const category = await categoryModel.findOneAndDelete({ _id: categoryID });
-    if (!category) {
-      res.status(404).json({ msg: "category not found." });
-      return;
-    }
+    const data = await categoryService.remove(categoryID);
 
-    res.status(200).json(category);
+    res.status(data.status).json(data.result);
     return;
   } catch (error) {
     next(error);
