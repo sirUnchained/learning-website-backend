@@ -33,7 +33,7 @@ async function authorization(req: Request, res: Response, next: NextFunction) {
       return;
     }
 
-    const result = (await callService({
+    const result = (await callService("USER", {
       action: "auth",
       replyServiceName: "category_auth",
       body: { token: `${token}` },

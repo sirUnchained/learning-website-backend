@@ -20,7 +20,7 @@
   "devDependencies": {
     "nodemon": "^3.1.7"
   },
-  "name": "courses micro service",
+  "name": "courses-micro-service",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {

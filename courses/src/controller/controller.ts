@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import courseModel from "../model/model";
 import { isValidObjectId } from "mongoose";
-import callService from "../other-services";
 import { createCourseValidator } from "../utils/validators/courses.validator";
+import { callService } from "../rabbitMQ";
 
 interface teacherType {
   _id: string;
@@ -19,13 +19,11 @@ export const getAll = async (
   try {
     const courses = await courseModel.find().lean();
 
-    const teachers: teacherType[] = await callService(
-      "users",
-      "1.1.1",
-      "GET",
-      "",
-      null
-    );
+    const teachers: teacherType[] = await callService("USER", {
+      action: "getTeachers",
+      replyServiceName: "course_teachers",
+      body: null,
+    });
     if (!teachers.length) {
       res.status(404).json({ msg: "no teachers found." });
       return;
@@ -66,27 +64,36 @@ export const getSingle = async (
       return;
     }
 
-    const teacher: teacherType = await callService(
-      "users",
-      "1.1.1",
-      "GET",
-      `single/${course.teacher}`,
-      null,
-      null
-    );
+    // const teacher: teacherType = await callService(
+    //   "users",
+    //   "1.1.1",
+    //   "GET",
+    //   `single/${course.teacher}`,
+    //   null,
+    //   null
+    // );
+    const teacher: teacherType = await callService("USER", {
+      action: "auth",
+      replyServiceName: "course_auth",
+      body: { token: req.user?.token },
+    });
     if (teacher.role !== "TEACHER") {
       res.status(404).json({ msg: "for this course teacher not found." });
       return;
     }
 
-    const category = await callService(
-      "categories",
-      "1.1.1",
-      "GET",
-      `single/${course.categoryID}`,
-      null,
-      null
-    );
+    // const category = await callService(
+    //   "categories",
+    //   "1.1.1",
+    //   "GET",
+    //   `single/${course.categoryID}`,
+    //   null,
+    //   null
+    // );
+    const category = await callService("CATEGORY", {
+      action: "getAll",
+      replyServiceName: "course_categories",
+    });
     if (!category) {
       res.status(404).json({ msg: "course category not found." });
       return;
@@ -136,14 +143,21 @@ export const create = async (
       res.status(404).json({ msg: "category not found." });
       return;
     }
-    const category = await callService(
-      "categories",
-      "1.1.1",
-      "GET",
-      `categories/single/${categoryID}`,
-      null,
-      null
-    );
+    // const category = await callService(
+    //   "categories",
+    //   "1.1.1",
+    //   "GET",
+    //   `categories/single/${categoryID}`,
+    //   null,
+    //   null
+    // );
+    const category = await callService("CATEGORY", {
+      action: "getSingle",
+      replyServiceName: "course_check_category",
+      body: {
+        id: categoryID,
+      },
+    });
     console.log("category", category);
     if (!category) {
       res.status(404).json({ msg: "category not found." });
