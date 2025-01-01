@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import categoryModel from "../model/model";
-import { isValidObjectId } from "mongoose";
 import CategoryService from "../service/service";
 
 const categoryService = new CategoryService();
@@ -42,33 +41,9 @@ export const create = async (
   next: NextFunction
 ) => {
   try {
-    const title: string | undefined = req.body.title;
-    const icon: string | undefined = req.body.icon;
+    const data = await categoryService.create(req.body);
 
-    const slug = title?.trim().replace(/[\s\._]/g, "-");
-
-    if (!slug) {
-      res
-        .status(409)
-        .json({ msg: "category title is not valid or may already exist." });
-      return;
-    }
-
-    const checkCategory = await categoryModel.findOne({ slug }).lean();
-    if (checkCategory) {
-      res
-        .status(409)
-        .json({ msg: "category title is not valid or may already exist." });
-      return;
-    }
-
-    const category = await categoryModel.create({
-      title,
-      slug,
-      icon: icon || "",
-    });
-
-    res.status(201).json(category);
+    res.status(data.status).json(data.result);
     return;
   } catch (error) {
     next(error);

@@ -44,8 +44,12 @@ export const getMe = async (
 ): Promise<void> => {
   try {
     const currentUser = req.user;
+    if (currentUser) {
+      res.status(200).json(currentUser);
+      return;
+    }
 
-    const data = usersService.getMe(currentUser);
+    const data = await usersService.getMe(currentUser);
     res.status(data.status).json(data.result || "err");
     return;
   } catch (error) {

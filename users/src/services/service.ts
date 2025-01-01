@@ -1,5 +1,6 @@
 import { isValidObjectId } from "mongoose";
 import userModel from "./../models/User";
+import jwt from "jsonwebtoken";
 
 class UsersService {
   async getAll() {
@@ -28,12 +29,26 @@ class UsersService {
     return { result: user, status: 200 };
   }
 
-  getMe(currentUser: any) {
-    if (!currentUser) {
+  async getMe(currentUser: any) {
+    try {
+      const payload = jwt.verify(currentUser.token, "shhh_iTs_SeCrET_KeY") as {
+        _id: string;
+        username: string;
+      };
+      console.log(payload);
+
+      const user = await userModel.findById(
+        payload._id,
+        "fullname username role"
+      );
+      if (!user) {
+        return { status: 404, result: "user not found." };
+      }
+
+      return { result: user, status: 200 };
+    } catch (error) {
       return { result: "you are not authorized.", status: 401 };
     }
-
-    return { result: currentUser, status: 200 };
   }
 
   async getTeachers() {

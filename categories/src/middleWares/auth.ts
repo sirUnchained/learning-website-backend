@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import callService from "../other-services";
+import { callService } from "../rabbitMQ";
 
 interface UserInterface {
   _id?: string;
@@ -34,31 +33,18 @@ async function authorization(req: Request, res: Response, next: NextFunction) {
       return;
     }
 
-    const payLoad: JwtPayload | string = jwt.verify(
-      token,
-      "shhh_iTs_SeCrET_KeY"
-    );
-    let user: any;
-    if (typeof payLoad === "object") {
-      user = await callService(
-        "users",
-        "1.1.1",
-        "GET",
-        payLoad._id.toString(),
-        null,
-        {
-          authorization: `Bearer ${token}`,
-        }
-      );
-
-      delete user?.password;
-      user.token = token;
-    } else {
+    const result = (await callService({
+      action: "auth",
+      replyServiceName: "category_auth",
+      body: { token: `${token}` },
+    })) as { status: number; result: UserInterface; token: string };
+    if (result.status != 200) {
       next(new Error("unAuthorization"));
       return;
     }
 
-    req.user = user;
+    result.token = token;
+    req.user = result.result;
     next();
   } catch (error) {
     next(new Error("unAuthorization"));
