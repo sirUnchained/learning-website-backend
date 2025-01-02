@@ -64,14 +64,6 @@ export const getSingle = async (
       return;
     }
 
-    // const teacher: teacherType = await callService(
-    //   "users",
-    //   "1.1.1",
-    //   "GET",
-    //   `single/${course.teacher}`,
-    //   null,
-    //   null
-    // );
     const teacher: teacherType = await callService("USER", {
       action: "auth",
       replyServiceName: "course_auth",
@@ -82,14 +74,6 @@ export const getSingle = async (
       return;
     }
 
-    // const category = await callService(
-    //   "categories",
-    //   "1.1.1",
-    //   "GET",
-    //   `single/${course.categoryID}`,
-    //   null,
-    //   null
-    // );
     const category = await callService("CATEGORY", {
       action: "getAll",
       replyServiceName: "course_categories",
@@ -143,14 +127,7 @@ export const create = async (
       res.status(404).json({ msg: "category not found." });
       return;
     }
-    // const category = await callService(
-    //   "categories",
-    //   "1.1.1",
-    //   "GET",
-    //   `categories/single/${categoryID}`,
-    //   null,
-    //   null
-    // );
+
     const category = await callService("CATEGORY", {
       action: "getSingle",
       replyServiceName: "course_check_category",
@@ -158,7 +135,6 @@ export const create = async (
         id: categoryID,
       },
     });
-    console.log("category", category);
     if (!category) {
       res.status(404).json({ msg: "category not found." });
       return;

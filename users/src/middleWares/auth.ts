@@ -38,7 +38,6 @@ async function authorization(req: Request, res: Response, next: NextFunction) {
       token,
       "shhh_iTs_SeCrET_KeY"
     );
-    console.log(payLoad);
     let user: any;
     if (typeof payLoad === "object") {
       user = await userModel.findOne({ username: payLoad?.username }).lean();

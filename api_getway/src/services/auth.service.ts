@@ -28,7 +28,6 @@ export const login = async (
 ): Promise<void> => {
   try {
     const register = await getService("users");
-    console.log(register);
     const result = await breaker.callService({
       method: "POST",
       url: `http://localhost:${register[0].port}/auth/login`,

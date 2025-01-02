@@ -35,7 +35,6 @@ class UsersService {
         _id: string;
         username: string;
       };
-      console.log(payload);
 
       const user = await userModel.findById(
         payload._id,

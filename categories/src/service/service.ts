@@ -8,7 +8,6 @@ class CategoryService {
     }
 
     const category = await categoryModel.findById(catID).lean();
-    console.log(category);
     if (!category) {
       return { status: 404, result: "category not found." };
     }
