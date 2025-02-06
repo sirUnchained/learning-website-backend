@@ -2,14 +2,13 @@ import mongoose from "mongoose";
 import app from "./app";
 
 import { startRabbit } from "./rabbitMQ";
+import configs from "./config_env";
 
 async function start() {
   try {
-    await mongoose
-      .connect("mongodb://0.0.0.0:27017/microServices-categories")
-      .then(() => {
-        console.log("mongodb connected.");
-      });
+    await mongoose.connect(configs.mongoUri).then(() => {
+      console.log("mongodb connected.");
+    });
     app.listen(4004, () => {
       console.log("categories service listen on port", 4004);
     });
