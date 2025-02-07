@@ -8,9 +8,9 @@ async function start() {
       .connect(configs.mongoUri)
       .then(() => console.log(`mongodb connected on ${mongo.connection.host}`));
 
-    app.listen(4004, () => console.log("lessons service listen on port 4004"));
+    app.listen(4005, () => console.log("purchase service listen to port 4005"));
 
-    await fetch("http://localhost:5000/register/lessons/1.1.1/4004", {
+    await fetch("http://localhost:5000/register/lessons/1.1.1/4005", {
       method: "POST",
     });
   } catch (error) {
@@ -22,7 +22,7 @@ async function start() {
 start();
 
 async function unregister() {
-  await fetch("http://localhost:5000/register/lessons/1.1.1/4004", {
+  await fetch("http://localhost:5000/register/lessons/1.1.1/4005", {
     method: "DELETE",
   });
 }
