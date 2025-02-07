@@ -10,7 +10,7 @@ async function start() {
 
     app.listen(4005, () => console.log("purchase service listen to port 4005"));
 
-    await fetch("http://localhost:5000/register/lessons/1.1.1/4005", {
+    await fetch("http://localhost:5000/register/purchase/1.1.1/4005", {
       method: "POST",
     });
   } catch (error) {
@@ -22,7 +22,7 @@ async function start() {
 start();
 
 async function unregister() {
-  await fetch("http://localhost:5000/register/lessons/1.1.1/4005", {
+  await fetch("http://localhost:5000/register/purchase/1.1.1/4005", {
     method: "DELETE",
   });
 }
