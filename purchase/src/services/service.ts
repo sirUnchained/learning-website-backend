@@ -34,7 +34,7 @@ class PurchaseService {
 
       const result = await getTrackId(amount);
       if (result.result != 100) {
-        return { result: 500, data: "somthing failed from zibal." };
+        return { status: 500, result: "somthing failed from zibal." };
       }
 
       const newPurchase = new purchaseModel({
@@ -45,9 +45,9 @@ class PurchaseService {
       });
       await newPurchase.save();
 
-      return { result: 201, data: result };
+      return { status: 201, result: result };
     } catch (error: any) {
-      return { result: 500, data: error.message };
+      return { status: 500, result: error.message };
     }
   };
 
@@ -65,17 +65,17 @@ class PurchaseService {
       });
       if (!purchase) {
         return {
-          result: 500,
-          data: "somthing went wrong, purchase not found.",
+          status: 500,
+          result: "somthing went wrong, purchase not found.",
         };
       }
 
       purchase.paymentStatus = !!+paymentResult.status;
       await purchase.save();
 
-      return { result: 201, data: purchase };
+      return { status: 201, result: purchase };
     } catch (error: any) {
-      return { result: 500, data: error.message };
+      return { status: 500, result: error.message };
     }
   };
 

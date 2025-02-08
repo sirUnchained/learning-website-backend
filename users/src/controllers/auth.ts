@@ -76,7 +76,7 @@ export const login = async (
       username,
     });
     if (!checkUser) {
-      res.status(404).json({ msg: "invalid username or password." });
+      res.status(404).json({ msg: "invalid username." });
       return;
     }
 
@@ -85,7 +85,7 @@ export const login = async (
       checkUser.password
     );
     if (!isPassWordValid) {
-      res.status(404).json({ msg: "invalid username or password." });
+      res.status(404).json({ msg: "invalid password." });
       return;
     }
 

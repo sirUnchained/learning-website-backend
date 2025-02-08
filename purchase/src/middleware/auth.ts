@@ -19,13 +19,18 @@ async function authorization(req: Request, res: Response, next: NextFunction) {
       action: "auth",
       replyServiceName: "purchase_user",
       body: { token: bearerToken },
-    })) as { result: Number; data: any };
-    req.user = data.data;
+    })) as { status: Number; result: any } | undefined;
+    if (!data?.result || data.status != 200) {
+      console.log(data, bearerToken);
+      throw new Error("user not found !");
+    }
+
+    req.user = data.result;
 
     next();
     return;
   } catch (error: any) {
-    res.status(401).json({ result: 400, data: error.message });
+    res.status(401).json({ status: 400, result: error.message });
     return;
   }
 }
