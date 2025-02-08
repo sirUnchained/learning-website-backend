@@ -27,7 +27,13 @@ async function startRabbit() {
 
       const wantedData = JSON.parse(content) as requestData;
 
-      // todo
+      switch (true) {
+        case wantedData.action === "getSingle":
+          break;
+
+        default:
+          break;
+      }
     });
   } catch (error) {
     throw error;
@@ -48,7 +54,8 @@ async function callService(sendingTo: string, data: requestData): Promise<any> {
         data.replyServiceName,
         async (msg) => {
           const result: { status: string; result: any } = JSON.parse(
-            msg?.content.toString() || '{"status":500,"result":"no clear result."}'
+            msg?.content.toString() ||
+              '{"status":500,"result":"no clear result."}'
           );
 
           resolve(result);

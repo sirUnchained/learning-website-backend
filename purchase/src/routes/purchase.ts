@@ -9,8 +9,17 @@ const purchaseController = new PurchaseController();
 purchaseRoutes
   .route("/")
   .get(authorization, isAdmin, purchaseController.getAllForAdmin);
-purchaseRoutes.route("/").post(purchaseController.newPurchase);
-purchaseRoutes.route("/").put(purchaseController.updatePurchase);
-purchaseRoutes.route("/").delete(purchaseController.removePurchase);
+
+purchaseRoutes.route("/").post(authorization, purchaseController.newPurchase);
+purchaseRoutes
+  .route("/zibal-cb")
+  .post(authorization, purchaseController.newPurchase);
+
+purchaseRoutes
+  .route("/")
+  .put(authorization, isAdmin, purchaseController.updatePurchase);
+purchaseRoutes
+  .route("/")
+  .delete(authorization, isAdmin, purchaseController.removePurchase);
 
 export default purchaseRoutes;

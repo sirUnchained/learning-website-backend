@@ -21,7 +21,7 @@ async function authorization(req: Request, res: Response, next: NextFunction) {
       body: { token: bearerToken },
     })) as { status: Number; result: any } | undefined;
     if (!data?.result || data.status != 200) {
-      console.log(data, bearerToken);
+      console.log("get in auth.ts purchase service");
       throw new Error("user not found !");
     }
 
