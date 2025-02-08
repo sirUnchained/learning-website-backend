@@ -25,7 +25,7 @@ async function startRabbit() {
 
       const wantedData = JSON.parse(content) as requestData;
 
-      // todo
+      // todo => purchase rabbitmq actions
     });
   } catch (error) {
     throw error;

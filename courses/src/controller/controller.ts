@@ -3,6 +3,9 @@ import courseModel from "../model/model";
 import { isValidObjectId } from "mongoose";
 import { createCourseValidator } from "../utils/validators/courses.validator";
 import { callService } from "../rabbitMQ";
+import CourseService from "../services/services";
+
+const courseService = new CourseService();
 
 interface teacherType {
   _id: string;
@@ -10,36 +13,16 @@ interface teacherType {
   username: string;
   role?: string;
 }
-
+// todo create course services
 export const getAll = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const courses = await courseModel.find().lean();
+    const result = await courseService.getAll();
 
-    const teachers: teacherType[] = await callService("USER", {
-      action: "getTeachers",
-      replyServiceName: "course_teachers",
-      body: null,
-    });
-    if (!teachers.length) {
-      res.status(404).json({ msg: "no teachers found." });
-      return;
-    }
-
-    courses.forEach((course, index) => {
-      delete course.description;
-      teachers.forEach((teacher) => {
-        if (course.teacherID?.toString() === teacher._id?.toString()) {
-          course.teacher = teacher;
-          delete course.teacherID;
-        }
-      });
-    });
-
-    res.status(200).json(courses);
+    res.status(result.status).json(result);
     return;
   } catch (error) {
     next(error);
@@ -53,40 +36,10 @@ export const getSingle = async (
 ) => {
   try {
     const { courseID } = req.params;
-    if (!isValidObjectId(courseID)) {
-      res.status(404).json({ msg: "course not found." });
-      return;
-    }
 
-    const course = await courseModel.findById(courseID).lean();
-    if (!course) {
-      res.status(404).json({ msg: "course not found." });
-      return;
-    }
+    const result = await courseService.getSingle(courseID);
 
-    const teacher: teacherType = await callService("USER", {
-      action: "auth",
-      replyServiceName: "course_auth",
-      body: { token: req.user?.token },
-    });
-    if (teacher.role !== "TEACHER") {
-      res.status(404).json({ msg: "for this course teacher not found." });
-      return;
-    }
-
-    const category = await callService("CATEGORY", {
-      action: "getAll",
-      replyServiceName: "course_categories",
-    });
-    if (!category) {
-      res.status(404).json({ msg: "course category not found." });
-      return;
-    }
-
-    delete course.categoryID;
-    delete course.teacherID;
-
-    res.status(200).json({ ...course, teacher, category });
+    res.status(result.status).json(result);
     return;
   } catch (error) {
     next(error);

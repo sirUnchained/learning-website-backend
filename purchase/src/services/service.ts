@@ -80,11 +80,11 @@ class PurchaseService {
   };
 
   public updatePurchase: Function = async (req: Request) => {
-    // todo
+    // todo => updatePurchaseService
   };
 
   public removePurchase: Function = async (req: Request) => {
-    // todo
+    // todo => removePurchaseService
   };
 }
 

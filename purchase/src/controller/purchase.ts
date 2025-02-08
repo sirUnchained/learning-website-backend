@@ -11,19 +11,19 @@ class PurchaseController {
   };
 
   public newPurchase: RequestHandler = async (req, res, next) => {
-    // todo
+    // todo => newPurchase
   };
 
   public purchaseCallback: RequestHandler = async (req, res, next) => {
-    // todo
+    // todo => purchaseCallback
   };
 
   public updatePurchase: RequestHandler = async (req, res, next) => {
-    // todo
+    // todo => updatePurchase
   };
 
   public removePurchase: RequestHandler = async (req, res, next) => {
-    // todo
+    // todo => removePurchase
   };
 }
 
