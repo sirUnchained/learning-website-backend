@@ -24,3 +24,5 @@ async function getTrackId(amount: number): Promise<trackIdResult> {
   const result = (await response.json()) as trackIdResult;
   return result;
 }
+
+export { getTrackId };
