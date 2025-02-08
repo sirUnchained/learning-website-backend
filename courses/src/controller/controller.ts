@@ -52,63 +52,9 @@ export const create = async (
   next: NextFunction
 ) => {
   try {
-    const { title, categoryID, description, price, isFinished } = req.body;
-    await createCourseValidator.validate(
-      { title, categoryID, description, price, isFinished },
-      { abortEarly: false }
-    );
+    const data = await courseService.create(req);
 
-    const currentUser = req.user;
-    const slug = title?.trim().replace(/[\s-\.]/g, "-");
-
-    const checkSlug = await courseModel.findOne({ slug });
-    if (checkSlug) {
-      res.status(409).json({ msg: "title already exist." });
-      return;
-    }
-
-    if (!currentUser || !currentUser.role) {
-      res.status(400).json({ msg: "you are not reconized." });
-      return;
-    }
-    if (currentUser.role !== "TEACHER" && currentUser.role !== "ADMIN") {
-      res.status(404).json({ msg: "teacher not found." });
-      return;
-    }
-
-    if (!isValidObjectId(categoryID)) {
-      res.status(404).json({ msg: "category not found." });
-      return;
-    }
-
-    const category = await callService("CATEGORY", {
-      action: "getSingle",
-      replyServiceName: "course_check_category",
-      body: {
-        id: categoryID,
-      },
-    });
-    if (!category) {
-      res.status(404).json({ msg: "category not found." });
-      return;
-    }
-
-    const cover = req.file?.path.replace(/.*public\\/g, "").replace(/\\/g, "/");
-
-    const newCourse = new courseModel({
-      title,
-      slug,
-      categoryID,
-      teacherID: currentUser?._id,
-      cover,
-      description,
-      info: description.slice(0, 200),
-      price,
-      isFinished: isFinished || false,
-    });
-    await newCourse.save();
-
-    res.status(201).json({ msg: "course created." });
+    res.status(data.status).json(data);
     return;
   } catch (error) {
     next(error);
@@ -122,18 +68,10 @@ export const removeSingle = async (
 ) => {
   try {
     const { courseID } = req.params;
-    if (!isValidObjectId(courseID)) {
-      res.status(404).json({ msg: "course not found." });
-      return;
-    }
 
-    const removedCourse = await courseModel.findByIdAndDelete(courseID).lean();
-    if (!removedCourse) {
-      res.status(404).json({ msg: "course not found." });
-      return;
-    }
+    const data = await courseService.remove(courseID);
 
-    res.status(200).json({ msg: "course removed !." });
+    res.status(data.status).json(data);
     return;
   } catch (error) {
     next(error);
