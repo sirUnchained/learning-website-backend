@@ -9,7 +9,12 @@ const schema: Schema = new Schema({
     type: Schema.Types.ObjectId,
     require: true,
   },
-  payMoney: {
+  amount: {
+    type: Number,
+    require: true,
+    Min: 0,
+  },
+  trackId: {
     type: Number,
     require: true,
     Min: 0,
