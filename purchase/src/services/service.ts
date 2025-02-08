@@ -4,8 +4,29 @@ import purchaseModel from "../models/purchase";
 
 class PurchaseService {
   public getAllForAdmin: Function = async (req: Request) => {
-    // todo
+    const { limit, page } = req.params;
+
+    const purchases = await purchaseModel
+      .find()
+      .limit(Number(limit) || 10)
+      .skip((Number(page) - 1) * Number(limit) || 1);
+
+    return { result: 200, data: purchases };
   };
+
+  public getAllForSingleUser: Function = async (req: any) => {
+    const { limit, page } = req.params;
+    const userId = req.user._id;
+
+    const purchases = await purchaseModel
+      .find({ userId })
+      .limit(Number(limit) || 10)
+      .skip((Number(page) - 1) * Number(limit) || 1);
+
+    return { result: 200, data: purchases };
+  };
+
+  public getSingleForAdmin: Function = async (req: Request) => {};
 
   public newPurchase: Function = async (req: any) => {
     try {

@@ -1,6 +1,4 @@
 import amqp from "amqplib";
-// import UsersService from "./service/service";
-// const userService = new UsersService();
 
 interface requestData {
   action: string;

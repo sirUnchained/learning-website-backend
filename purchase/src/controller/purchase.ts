@@ -2,7 +2,8 @@ import { NextFunction, RequestHandler } from "express";
 
 class PurchaseController {
   public getAllForAdmin: RequestHandler = async (req, res, next) => {
-    // todo
+    res.status(200).json({ msg: "done." });
+    return;
   };
 
   public newPurchase: RequestHandler = async (req, res, next) => {
