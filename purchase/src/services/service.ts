@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { getTrackId } from "../utils/zibal";
 import purchaseModel from "../models/purchase";
+import { callService } from "../rabbitMQ";
 
 class PurchaseService {
   public getAllForAdmin: Function = async (
@@ -32,16 +33,27 @@ class PurchaseService {
 
   public newPurchase: Function = async (req: any) => {
     try {
-      const amount = req.body?.amount as Number;
+      if (!req.body?.courseId) {
+        return { status: 400, result: "courseId found." };
+      }
 
-      const result = await getTrackId(amount);
+      const checkCourse = await callService("COURSE", {
+        action: "getSingle",
+        replyServiceName: "purchase_course",
+        body: { id: req.body.courseId },
+      });
+      if (checkCourse.status != 200) {
+        return { status: 404, result: "course not found." };
+      }
+
+      const result = await getTrackId(checkCourse.price);
       if (result.result != 100) {
         console.log(result);
         return { status: 500, result: "somthing failed from zibal." };
       }
 
       const newPurchase = new purchaseModel({
-        amount,
+        amount: checkCourse.price,
         trackId: String(result.trackId),
         userId: req.user._id,
         courseId: req.body.courseId,
