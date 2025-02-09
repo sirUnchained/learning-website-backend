@@ -6,7 +6,7 @@ type trackIdResult = {
   trackId: Number;
 };
 
-async function getTrackId(amount: number): Promise<trackIdResult> {
+async function getTrackId(amount: Number): Promise<trackIdResult> {
   const data = {
     merchant: configs.zibal.merchant,
     amount,

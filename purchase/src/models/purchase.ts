@@ -5,10 +5,12 @@ const schema: Schema = new Schema(
     courseId: {
       type: Schema.Types.ObjectId,
       required: true,
+      index: true,
     },
     userId: {
       type: Schema.Types.ObjectId,
       required: true,
+      index: true,
     },
     amount: {
       type: Number,

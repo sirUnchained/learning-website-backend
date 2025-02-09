@@ -1,19 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import courseModel from "../model/model";
-import { isValidObjectId } from "mongoose";
-import { createCourseValidator } from "../utils/validators/courses.validator";
-import { callService } from "../rabbitMQ";
 import CourseService from "../services/services";
 
 const courseService = new CourseService();
 
-interface teacherType {
-  _id: string;
-  fullname: string;
-  username: string;
-  role?: string;
-}
-// todo create course services
 export const getAll = async (
   req: Request,
   res: Response,

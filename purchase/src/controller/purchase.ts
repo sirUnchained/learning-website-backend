@@ -11,11 +11,17 @@ class PurchaseController {
   };
 
   public newPurchase: RequestHandler = async (req, res, next) => {
-    // todo => newPurchase
+    const result = await purchaseService.newPurchase(req);
+
+    res.status(result.status).json(result);
+    return;
   };
 
   public purchaseCallback: RequestHandler = async (req, res, next) => {
-    // todo => purchaseCallback
+    const result = await purchaseService.purchaseCallback(req);
+
+    res.status(result.status).json(result);
+    return;
   };
 
   public updatePurchase: RequestHandler = async (req, res, next) => {

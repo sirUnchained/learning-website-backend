@@ -136,6 +136,9 @@ class CourseService {
 
       return { status: 201, result: "course created." };
     } catch (error: any) {
+      if (error.name === "ValidationError") {
+        return { status: 400, result: error.errors };
+      }
       return { status: 500, result: error.message };
     }
   };

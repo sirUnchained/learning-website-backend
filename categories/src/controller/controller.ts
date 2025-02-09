@@ -11,7 +11,7 @@ export const getAll = async (
 ) => {
   try {
     const categories = await categoryModel.find({}).lean();
-    res.status(200).json(categories);
+    res.status(200).json({ status: 200, result: categories });
     return;
   } catch (error) {
     next(error);
@@ -43,7 +43,7 @@ export const create = async (
   try {
     const data = await categoryService.create(req.body);
 
-    res.status(data.status).json(data.result);
+    res.status(data.status).json(data);
     return;
   } catch (error) {
     next(error);

@@ -1,6 +1,5 @@
 import amqp from "amqplib";
-// import UsersService from "./service/service";
-// const userService = new UsersService();
+import CourseService from "./services/services";
 
 interface requestData {
   action: string;
@@ -26,9 +25,19 @@ async function startRabbit() {
       }
 
       const wantedData = JSON.parse(content) as requestData;
+      const courseService = new CourseService();
 
       switch (true) {
         case wantedData.action === "getSingle":
+          const data = await courseService.getSingle(wantedData.body?.id);
+          if (!wantedData.body?.id) {
+            console.log("we have issue here id is =>", wantedData.body.id);
+          }
+
+          (await channel).sendToQueue(
+            wantedData.replyServiceName,
+            Buffer.from(JSON.stringify(data))
+          );
           break;
 
         default:
