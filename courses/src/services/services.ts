@@ -59,6 +59,7 @@ class CourseService {
         body: { id: course.teacherID },
       });
       if (teacher.role !== "TEACHER") {
+        console.log(teacher);
         return { status: 404, result: "for this course teacher not found." };
       }
 

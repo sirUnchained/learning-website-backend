@@ -20,25 +20,13 @@ async function startRabbit() {
     (await channel).consume(queueName, async (msg) => {
       const content = msg?.content.toString();
       if (!content) {
-        // sendFailedResult(
-        //   channel,
-        //   400,
-        //   "data you send failed to get parsed.",
-        //   wantedData.replyServiceName
-        // );
+        console.log("recived content is not valid, courses rabbit =>", content);
         return;
       }
 
       const wantedData = JSON.parse(content) as requestData;
-      // console.log(wantedData);
       if (!isRequestData(wantedData)) {
-        console.log(content);
-        // await sendFailedResult(
-        //   channel,
-        //   404,
-        //   "data you send is not a valid schema.",
-        //   wantedData.replyServiceName
-        // );
+        console.log("courses rabbitmq =>", content);
         return;
       }
 
@@ -46,10 +34,7 @@ async function startRabbit() {
 
       switch (true) {
         case wantedData.action === "getSingle":
-          console.log("called for single course.");
-
           const data = await courseService.getSingle(wantedData.body?.id);
-          console.log(data);
           if (!wantedData.body?.id) {
             await sendFailedResult(
               channel,
