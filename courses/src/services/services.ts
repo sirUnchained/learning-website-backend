@@ -53,13 +53,16 @@ class CourseService {
         return { status: 404, result: "course not found." };
       }
 
-      const teacher: teacherType = await callService("USER", {
-        action: "auth",
-        replyServiceName: "getSingle",
-        body: { id: course.teacherID },
-      });
-      if (teacher.role !== "TEACHER") {
-        console.log(teacher);
+      const data: { status: Number; result: teacherType } = await callService(
+        "USER",
+        {
+          action: "auth",
+          replyServiceName: "getSingle",
+          body: { id: course.teacherID },
+        }
+      );
+      if (data.status != 200) {
+        console.log(data);
         return { status: 404, result: "for this course teacher not found." };
       }
 
@@ -74,7 +77,10 @@ class CourseService {
       delete course.categoryID;
       delete course.teacherID;
 
-      return { status: 200, result: { ...course, teacher, category } };
+      return {
+        status: 200,
+        result: { ...course, teacher: data.result, category },
+      };
     } catch (error: any) {
       return { status: 500, result: error.message };
     }
