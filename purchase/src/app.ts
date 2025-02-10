@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 const app = express();
+app.use(express.json());
 
 import purchaseRoutes from "./routes/purchase";
 import limit from "express-rate-limit";

@@ -19,19 +19,45 @@ async function startRabbit() {
 
     (await channel).consume(queueName, async (msg) => {
       const content = msg?.content.toString();
-      if (!content || !isRequestData(content)) {
-        console.log(content);
+      if (!content) {
+        // sendFailedResult(
+        //   channel,
+        //   400,
+        //   "data you send failed to get parsed.",
+        //   wantedData.replyServiceName
+        // );
         return;
       }
 
       const wantedData = JSON.parse(content) as requestData;
+      // console.log(wantedData);
+      if (!isRequestData(wantedData)) {
+        console.log(content);
+        // await sendFailedResult(
+        //   channel,
+        //   404,
+        //   "data you send is not a valid schema.",
+        //   wantedData.replyServiceName
+        // );
+        return;
+      }
+
       const courseService = new CourseService();
 
       switch (true) {
         case wantedData.action === "getSingle":
+          console.log("called for single course.");
+
           const data = await courseService.getSingle(wantedData.body?.id);
+          console.log(data);
           if (!wantedData.body?.id) {
-            console.log("we have issue here id is =>", wantedData.body.id);
+            await sendFailedResult(
+              channel,
+              400,
+              "you must send course id to me.",
+              wantedData.replyServiceName
+            );
+            return;
           }
 
           (await channel).sendToQueue(
@@ -41,19 +67,22 @@ async function startRabbit() {
           break;
 
         default:
-          (await channel).sendToQueue(
-            wantedData.replyServiceName,
-            Buffer.from(
-              JSON.stringify({
-                status: 404,
-                result: "you have an unknown action for course service.",
-              })
-            )
+          await sendFailedResult(
+            channel,
+            404,
+            "you have an unknown action for course service.",
+            wantedData.replyServiceName
           );
           break;
       }
     });
   } catch (error) {
+    // await sendFailedResult(
+    //   channel,
+    //   404,
+    //   "you have an unknown action for course service.",
+    //   wantedData.replyServiceName
+    // );
     throw error;
   }
 }
@@ -91,6 +120,25 @@ async function callService(sendingTo: string, data: requestData): Promise<any> {
   } catch (error) {
     throw error;
   }
+}
+
+async function sendFailedResult(
+  channel: Promise<amqp.Channel>,
+  status: Number,
+  result: string,
+  replyServiceName: string
+) {
+  (await channel).sendToQueue(
+    replyServiceName,
+    Buffer.from(
+      JSON.stringify({
+        status,
+        result,
+      })
+    )
+  );
+
+  return;
 }
 
 function isRequestData(data: any): data is requestData {

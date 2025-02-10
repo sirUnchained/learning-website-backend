@@ -33,6 +33,7 @@ class PurchaseService {
 
   public newPurchase: Function = async (req: any) => {
     try {
+      // the only thing should be validated is courseId
       if (!req.body?.courseId) {
         return { status: 400, result: "courseId found." };
       }
