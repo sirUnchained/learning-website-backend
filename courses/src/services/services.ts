@@ -68,7 +68,7 @@ class CourseService {
 
       const category = await callService("CATEGORY", {
         action: "getAll",
-        replyServiceName: "course_categories",
+        replyServiceName: "course_category",
       });
       console.log(category);
       if (!category) {

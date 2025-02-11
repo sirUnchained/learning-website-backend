@@ -50,6 +50,12 @@ async function startRabbit() {
           break;
 
         default:
+          (await channel).sendToQueue(
+            wantedData.replyServiceName,
+            Buffer.from(
+              JSON.stringify({ status: 404, result: "no clear action." })
+            )
+          );
           break;
       }
     });
