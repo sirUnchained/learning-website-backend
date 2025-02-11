@@ -48,20 +48,22 @@ class PurchaseService {
         return { status: 404, result: "course not found." };
       }
 
-      const result = await getTrackId(checkCourse.price);
+      const result = await getTrackId(checkCourse.result.price);
       if (result.result != 100) {
+        console.log(checkCourse);
         console.log(result);
         return { status: 500, result: "somthing failed from zibal." };
       }
 
       const newPurchase = new purchaseModel({
-        amount: checkCourse.price,
+        amount: checkCourse.result.price,
         trackId: String(result.trackId),
         userId: req.user._id,
         courseId: req.body.courseId,
       });
       await newPurchase.save();
 
+      result.trackId = `https://gateway.zibal.ir/start/${result.trackId}`;
       return { status: 201, result: result };
     } catch (error: any) {
       return { status: 500, result: error.message };
@@ -72,8 +74,8 @@ class PurchaseService {
     req: Request
   ): Promise<{ status: Number; result: any }> => {
     try {
-      const paymentResult = req.params as {
-        trackId: string;
+      const paymentResult = req.query as {
+        trackId: string | number;
         success: string;
         status: string;
         orderId?: string;
@@ -83,13 +85,14 @@ class PurchaseService {
         trackId: paymentResult.trackId,
       });
       if (!purchase) {
+        console.log(purchase, paymentResult);
         return {
           status: 500,
           result: "somthing went wrong, purchase not found.",
         };
       }
 
-      purchase.paymentStatus = !!+paymentResult.status;
+      purchase.paymentStatus = !!Number(paymentResult.success);
       await purchase.save();
 
       return { status: 201, result: purchase };

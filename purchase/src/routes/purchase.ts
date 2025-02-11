@@ -13,7 +13,7 @@ purchaseRoutes
 purchaseRoutes.route("/").post(authorization, purchaseController.newPurchase);
 purchaseRoutes
   .route("/zibal-cb")
-  .post(authorization, purchaseController.purchaseCallback);
+  .get(authorization, purchaseController.purchaseCallback);
 
 purchaseRoutes
   .route("/")

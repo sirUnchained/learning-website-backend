@@ -3,13 +3,13 @@ import configs from "../config_env";
 type trackIdResult = {
   message: String;
   result: Number;
-  trackId: Number;
+  trackId: Number | string;
 };
 
 async function getTrackId(amount: Number): Promise<trackIdResult> {
   const data = {
     merchant: configs.zibal.merchant,
-    amount,
+    amount: +amount,
     callbackUrl: configs.zibal.cb,
   };
 
