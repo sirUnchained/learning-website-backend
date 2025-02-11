@@ -30,22 +30,31 @@ async function startRabbit() {
       switch (true) {
         case wantedData.action === "getSingle":
           const categoryID = wantedData.body?.id || "0";
-          const user = await categoryService.getSingle(categoryID);
+          const category = await categoryService.getSingle(categoryID);
 
           (await channel).sendToQueue(
             wantedData.replyServiceName,
-            Buffer.from(JSON.stringify(user))
+            Buffer.from(JSON.stringify(category))
           );
 
           break;
 
-        case wantedData.action === "remove":
-          const catID = wantedData.body.id;
-          const teachers = await categoryService.remove(catID);
+        case wantedData.action === "getAll":
+          const categories = await categoryService.getAll();
 
           (await channel).sendToQueue(
             wantedData.replyServiceName,
-            Buffer.from(JSON.stringify(teachers))
+            Buffer.from(JSON.stringify(categories))
+          );
+          break;
+
+        case wantedData.action === "remove":
+          const catID = wantedData.body.id;
+          const removedResult = await categoryService.remove(catID);
+
+          (await channel).sendToQueue(
+            wantedData.replyServiceName,
+            Buffer.from(JSON.stringify(removedResult))
           );
           break;
 

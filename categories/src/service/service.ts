@@ -15,6 +15,15 @@ class CategoryService {
     return { status: 200, result: category };
   }
 
+  async getAll(): Promise<{ status: number; result: any }> {
+    const categories = await categoryModel.find().lean();
+    if (!categories) {
+      return { status: 404, result: "categories not found." };
+    }
+
+    return { status: 200, result: categories };
+  }
+
   async create(body: {
     title: string;
     icon: string | undefined;

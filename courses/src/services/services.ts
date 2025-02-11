@@ -70,8 +70,8 @@ class CourseService {
         action: "getAll",
         replyServiceName: "course_category",
       });
-      console.log(category);
       if (!category) {
+        console.log(category);
         return { status: 404, result: "course category not found." };
       }
 
