@@ -44,6 +44,7 @@ class PurchaseService {
         body: { id: req.body.courseId },
       });
       if (checkCourse.status != 200) {
+        console.log(checkCourse);
         return { status: 404, result: "course not found." };
       }
 

@@ -56,8 +56,8 @@ class CourseService {
       const data: { status: Number; result: teacherType } = await callService(
         "USER",
         {
-          action: "auth",
-          replyServiceName: "getSingle",
+          action: "getSingle",
+          replyServiceName: "user_course",
           body: { id: course.teacherID },
         }
       );
@@ -70,6 +70,7 @@ class CourseService {
         action: "getAll",
         replyServiceName: "course_categories",
       });
+      console.log(category);
       if (!category) {
         return { status: 404, result: "course category not found." };
       }
